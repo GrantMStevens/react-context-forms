@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/GrantMStevens/react-context-forms/issues"
   },
-  "homepage": "https://github.com/GrantMStevens/react-context-forms#readme"
+  "homepage": "https://github.com/GrantMStevens/react-context-forms#readme",
+  "dependencies": {
+    "classnames": "^2.2.3"
+  }
 }
