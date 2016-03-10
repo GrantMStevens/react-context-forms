@@ -1,5 +1,5 @@
 {
-  "name": "react-forms",
+  "name": "react-context-forms",
   "version": "0.0.1",
   "description": "Form components with props based validation for React",
   "main": "dist/index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GrantMStevens/react-forms.git"
+    "url": "git+https://github.com/GrantMStevens/react-context-forms.git"
   },
   "keywords": [
     "react",
@@ -20,7 +20,7 @@
   "author": "Grant Stevens",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/GrantMStevens/react-forms/issues"
+    "url": "https://github.com/GrantMStevens/react-context-forms/issues"
   },
-  "homepage": "https://github.com/GrantMStevens/react-forms#readme"
+  "homepage": "https://github.com/GrantMStevens/react-context-forms#readme"
 }
