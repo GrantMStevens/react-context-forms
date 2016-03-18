@@ -49,26 +49,36 @@ The `<Form>` component uses React's context to find all of its child `<Input>` c
 
 ## Simple example
 
-Here is a simple, albeit slightly contrived example of taking in props from a parent component that manages the form's data. The usage of state here is purely for illustration purposes.
+Here is a simple, albeit slightly contrived example. The usage of state here is purely for illustration purposes.
 
 ```
 import React, { Component } from 'react'
+import { render } from 'react-dom'
 import classNames from 'classnames'
 import {Form, Input} from 'react-context-forms'
 
 export default class MyFormComponent extends Component {
   constructor(props){
     super(props);
-    
+
     this.state = {
-      formIsValid: false 
+      user: {
+          id: 111,
+          name: 'John Smith',
+          age: 34,
+          address: '123 Main Street'
+        },
+      formIsValid: false
     }
   }
-  
+
   componentDidMount(){
-    this.setState({
-      formIsValid: this.refs.myForm.valid
-    })
+    console.log(this.refs.myForm.valid)
+    if (this.refs.myForm.valid !== this.state.formIsValid){
+      this.setState({
+        formIsValid: this.refs.myForm.valid
+      })
+    }
   }
 
   onFormUpdate(){
@@ -77,21 +87,34 @@ export default class MyFormComponent extends Component {
     })
   }
 
+  onFormInputChanged(field, ref, e){
+    console.log('input changed');
+    bin.log(ref);
+    var state = {};
+    state[ref + 'Valid'] = this.refs[ref].valid
+    var user = this.state.user;
+    user[field] = e.target.value;
+    state.user = user;
+    this.setState(state);
+  }
+
   render(){
   return <div>
-    <Form ref="myForm">
-      <div>
-        <label>Name</label>
-        <Input type="text" required defaultValue={this.props.name} 
-          onChange={this.props.onFormInputChanged.bind(this, 'name')} />
-      </div>
-      <div>
-        <label>Age</label>
-        <Input type="numeric" required min="18" ref="ageInput" defaultValue={this.props.age} 
-          onChange={this.props.onFormInputChanged.bind(this, 'age')} />
-        <span className={ClassNames({'hide': !this.refs.ageInput.validationErrors.min})}>Person must be at least 18 years old!</span>
-      </div>
-      <h4>Form is valid: {this.state.formIsValid}</h4>
+    <Form ref="myForm" onUpdate={this.onFormUpdate.bind(this)}>
+        <div>
+          <div>
+            <label>Name</label>
+            <Input type="text" required defaultValue={this.state.user.name}
+              onChange={this.onFormInputChanged.bind(this, 'name')} />
+          </div>
+          <div>
+            <label>Age</label>
+            <Input type="numeric" required min="18" defaultValue={this.state.user.age}  ref="ageInput"
+              onChange={this.onFormInputChanged.bind(this, 'age', 'ageInput')} />
+            <span style={{visibility: this.state.ageInputValid ? 'visible' : 'hidden'}}>Person must be at least 18 years old!</span>
+          </div>
+        </div>
+      <h4>{'Form is valid: ' + this.state.formIsValid}</h4>
     </Form>
   </div>
   }

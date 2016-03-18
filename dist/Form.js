@@ -1,3 +1,4 @@
+
 import React, { Component, PropTypes } from 'react'
 import classNames from 'classnames';
 
@@ -5,6 +6,8 @@ export default class Form extends Component {
     constructor(props) {
         super(props);
         this.childrenToValidate = [];
+
+        var val = props.value || props.defaultValue;
 
         this.dirty = false;
         this.pristine = true;
@@ -55,30 +58,39 @@ export default class Form extends Component {
     }
 
     validateForm() {
+        console.log('calling');
         this._validateForm(true);
         this.updateFormState();
     }
 
-    _validateForm(isFinalValidation, child){
-        if (child){
-            this.dirty = false;
-            this.pristine = true;
-            this.valid = true;
-            this.invalid = true;
-            this.touched = false;
+    _validateForm(isFinalValidation){
+        this.dirty = false;
+        this.pristine = true;
+        this.valid = true;
+        this.invalid = false;
+        this.touched = false;
 
+        this.childrenToValidate.map((child) => {
+            child.runValidators(undefined, isFinalValidation);
             if (!child.valid) this.valid = false;
             if (!child.pristine) this.pristine = false;
             if (child.invalid) this.invalid = true;
             if (child.touched) this.touched = true;
             if (child.dirty) this.dirty = true;
-        }
+        });
 
         if (this.props.onUpdate) this.props.onUpdate(this);
     }
 
     onFormChange(child, e){
-        this._validateForm(false, child);
+        this._validateForm();
+        this.updateFormState();
+    }
+
+    setInvalid(){
+        this.valid = false;
+        this.invalid = true;
+        this.touched = true;
         this.updateFormState();
     }
 

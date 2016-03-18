@@ -131,8 +131,9 @@ export default class Input extends Component {
     }
 
     runValidators(val, isFinalValidation) {
-        this._runValidators(val);
+        var valid = this._runValidators(val || this.state.value, isFinalValidation);
         this.updateInputState();
+        return valid;
     }
 
     _runValidators(val, isFinalValidation){
@@ -178,11 +179,11 @@ export default class Input extends Component {
         this.pristine = false;
         this.dirty = true;
 
-        this.runValidators(val);
+        this._runValidators(val);
+        this.updateInputState();
         this.setState({
             value: val
         });
-
         if (this.context.validateParentForm) this.context.validateParentForm(this);
 
         if (this.props.debounce && !Number.isNaN(Number.parseInt(this.props.debounce))) {
@@ -194,6 +195,9 @@ export default class Input extends Component {
     }
 
     setPristine(){
+        if (this.props.preventReset){
+            return;
+        }
         this.pristine = true;
         this.dirty = false;
         this.touched = false;
