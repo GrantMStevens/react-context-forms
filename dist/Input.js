@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
 const validationProps = ['minLength', 'maxLength', 'required', 'numeric', 'pattern', 'max', 'min'];
@@ -31,6 +32,7 @@ export default class Input extends Component {
         this.runValidators = this.runValidators.bind(this);
         this.setPristine = this.setPristine.bind(this);
         this.setInvalid = this.setInvalid.bind(this);
+        this.focus = this.focus.bind(this);
     }
 
     updateInputState(){
@@ -46,7 +48,8 @@ export default class Input extends Component {
 
     componentDidMount(){
         this.bootstrapComponent();
-        this.context.getFormReferences(this);
+        if (this.context.getFormReferences)
+            this.context.getFormReferences(this);
     }
 
     componentWillReceiveProps(nextProps){
@@ -61,13 +64,22 @@ export default class Input extends Component {
     }
 
     bootstrapComponent(){
-        if (this.props.defaultValue || (!this.props.defaultValue && (this.props.defaultValue === false || this.props.defaultValue === 0))
+        var value = ReactDOM.findDOMNode(this.refs.currentInput).value;
+
+        if (value || this.props.defaultValue || (!this.props.defaultValue && (this.props.defaultValue === false || this.props.defaultValue === 0))
             || this.props.value || (!this.props.value && (this.props.value === false || this.props.value === 0))){
             this.pristine = false;
             this.dirty = true;
         }
+        if (value || value === false || value === 0){
+            value = value;
+        } else if (this.props.value || this.props.value === false || this.props.value === 0){
+            value = this.props.value;
+        } else {
+            value = this.props.defaultValue;
+        }
 
-        this._runValidators((this.props.value || this.props.value === false || this.props.value === 0) ? this.props.value : this.props.defaultValue);
+        this._runValidators(value);
         if (this.context.validateParentForm) this.context.validateParentForm(this);
     }
 
@@ -131,6 +143,8 @@ export default class Input extends Component {
     }
 
     runValidators(val, isFinalValidation) {
+        if (!this.refs.currentInput) return false;
+        val = this.props.type === 'checkbox' ? ReactDOM.findDOMNode(this.refs.currentInput).checked : ReactDOM.findDOMNode(this.refs.currentInput).value;
         var valid = this._runValidators(val || this.state.value, isFinalValidation);
         this.updateInputState();
         return valid;
@@ -158,9 +172,20 @@ export default class Input extends Component {
         return valid;
     }
 
-    onInputFocus(){
+    onInputFocus(e){
         this.touched = true;
+        var val = this.props.type === 'checkbox' ? e.target.checked : e.target.value;
+        this._runValidators(val);
         this.updateInputState();
+        if (this.props.onFocus) this.props.onFocus(e)
+    }
+
+    onInputBlur(e){
+        if (this.props.onBlur) this.props.onBlur(e)
+    }
+
+    onKeyUp(e){
+        if (this.props.onKeyUp) this.props.onKeyUp(e);
     }
 
     onInputChanged(e) {
@@ -188,7 +213,7 @@ export default class Input extends Component {
 
         if (this.props.debounce && !Number.isNaN(Number.parseInt(this.props.debounce))) {
             clearTimeout(this.debounce);
-            this.debounce = window.setTimeout(() => (this.props.onChange || function(val){})(e), this.props.debounce)
+            this.debounce = window.setTimeout(() => (this.props.onChange || function(val){})(val, e), this.props.debounce)
         } else {
             (this.props.onChange || function(val){})(e)
         }
@@ -215,6 +240,14 @@ export default class Input extends Component {
         this.updateInputState();
     }
 
+    focus(){
+        ReactDOM.findDOMNode(this.refs.currentInput).focus();
+    }
+
+    blur(){
+        ReactDOM.findDOMNode(this.refs.currentInput).blur();
+    }
+
     render() {
         var classes = classNames({
             'valid': this.state.valid,
@@ -229,13 +262,15 @@ export default class Input extends Component {
                 return (
                     <input type={this.props.type} noValidate className={classes} onChange={this.onInputChanged.bind(this)} placeholder={this.props.placeholder}
                            onFocus={this.onInputFocus.bind(this)} defaultValue={this.props.defaultValue} value={this.state.value}
-                           disabled={this.props.disabled} checked={this.state.value} ref="currentInput"/>
+                           disabled={this.props.disabled} checked={this.state.value} ref="currentInput" onKeyUp={this.onKeyUp.bind(this)}
+                           onBlur={this.onInputBlur.bind(this)} style={this.props.style}/>
                 )
             } else {
                 return (
                     <textarea noValidate className={classes} onChange={this.onInputChanged.bind(this)} placeholder={this.props.placeholder}
                               onFocus={this.onInputFocus.bind(this)} defaultValue={this.props.defaultValue} value={this.state.value}
-                              disabled={this.props.disabled} rows={this.props.rows} columns={this.props.columns} ref="currentInput"/>
+                              disabled={this.props.disabled} rows={this.props.rows} columns={this.props.columns} ref="currentInput" onKeyUp={this.onKeyUp.bind(this)}
+                              onBlur={this.onInputBlur.bind(this)} style={this.props.style}/>
                 )
             }
         };

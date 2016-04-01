@@ -1,4 +1,3 @@
-
 import React, { Component, PropTypes } from 'react'
 import classNames from 'classnames';
 
@@ -63,6 +62,13 @@ export default class Form extends Component {
         this.updateFormState();
     }
 
+    handleFormSubmit(e){
+        if (this.props.onSubmit){
+            e.preventDefault();
+            this.props.onSubmit(e)
+        }
+    }
+
     _validateForm(isFinalValidation){
         this.dirty = false;
         this.pristine = true;
@@ -104,7 +110,8 @@ export default class Form extends Component {
         }, this.props.className || {});
 
         return (
-            <form name={this.props.name} className={classes} onChange={this.onFormChange.bind(this, undefined)}>
+            <form name={this.props.name} className={classes} onChange={this.onFormChange.bind(this, undefined)}
+                  style={this.props.style} onSubmit={this.handleFormSubmit.bind(this)}>
                 {this.props.children}
             </form>
         )

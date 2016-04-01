@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/GrantMStevens/react-context-forms#readme",
   "dependencies": {
-    "classnames": "^2.2.3"
+    "classnames": "^2.2.3",
+    "react-dom": "^0.14.6"
   }
 }
