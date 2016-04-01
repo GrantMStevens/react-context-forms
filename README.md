@@ -49,7 +49,7 @@ The `<Form>` component uses React's context to find all of its child `<Input>` c
 
 ## Simple example
 
-Here is a simple, albeit slightly contrived example. The usage of state here is purely for illustration purposes.
+Here is a simple, albeit slightly contrived example. The use of state here is purely for illustration purposes.
 
 ```
 import React, { Component } from 'react'
@@ -73,7 +73,6 @@ export default class MyFormComponent extends Component {
   }
 
   componentDidMount(){
-    console.log(this.refs.myForm.valid)
     if (this.refs.myForm.valid !== this.state.formIsValid){
       this.setState({
         formIsValid: this.refs.myForm.valid
@@ -88,8 +87,6 @@ export default class MyFormComponent extends Component {
   }
 
   onFormInputChanged(field, ref, e){
-    console.log('input changed');
-    bin.log(ref);
     var state = {};
     state[ref + 'Valid'] = this.refs[ref].valid
     var user = this.state.user;
