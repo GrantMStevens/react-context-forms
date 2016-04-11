@@ -1,7 +1,5 @@
 # react-context-forms
 
-This project is still under construction, with the possibility of breaking changes. It depends on [Classnames](https://github.com/JedWatson/classnames)
-
 ## Installation
 
 `npm i react-context-forms`
@@ -28,7 +26,7 @@ debounce="500"
 />
 ```
 
-The `<Input>` component exposes the `valid`, `invalid`, `dirty`, `pristine`, and `touched` properties on itself that can be accessed from a ref and applies css classes with the same names. It also exposes the following functions: `setPristine()`, `setInvalid()`, `runValidators()`
+The `<Input>` component exposes the `valid`, `invalid`, `dirty`, `pristine`, and `touched` properties on itself that can be accessed from a ref and applies css classes with the same names. It also exposes the following functions: `setPristine()`, `setInvalid()`, `runValidators()`, `focus()`, `blur()`, `setValue(value)`
 
 An `onChange` event will fire for the input and its execution will be delayed by the debounce value if set.
 
