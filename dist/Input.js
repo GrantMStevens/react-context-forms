@@ -33,6 +33,7 @@ export default class Input extends Component {
         this.setPristine = this.setPristine.bind(this);
         this.setInvalid = this.setInvalid.bind(this);
         this.focus = this.focus.bind(this);
+        this.setValue = this.setValue.bind(this);
     }
 
     updateInputState(){
@@ -53,7 +54,7 @@ export default class Input extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-        if (this.state.value === '' || this.state.value === undefined){
+        if ((this.state.value === '' || this.state.value === undefined) && (nextProps.defaultValue !== '' && nextProps.defaultValue !== undefined)){
             this.setState({
                 value: nextProps.defaultValue
             })
@@ -246,6 +247,12 @@ export default class Input extends Component {
 
     blur(){
         ReactDOM.findDOMNode(this.refs.currentInput).blur();
+    }
+
+    setValue(value){
+        this.setState({
+            value: value
+        })
     }
 
     render() {
